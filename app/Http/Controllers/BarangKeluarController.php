@@ -16,26 +16,29 @@ class BarangKeluarController extends Controller
         $tgl_keluar = $request->input('tgl_keluar');
     
         $rsetBarangKeluar = BarangKeluar::with('barang')
-                        ->when($search, function ($query, $search) {
-                            return $query->whereHas('barang', function($q) use ($search) {
-                                $q->where('merk', 'like', '%' . $search . '%')
-                                  ->orWhere('seri', 'like', '%' . $search . '%');
-                            });
-                        })
-                        ->when($tgl_keluar, function ($query, $tgl_keluar) {
-                            return $query->whereDate('tgl_keluar', $tgl_keluar);
-                        })
-                        ->latest()
-                        ->paginate(10);
+            ->when($search, function ($query, $search) {
+                return $query->whereHas('barang', function($q) use ($search) {
+                    $q->where('merk', 'like', '%' . $search . '%')
+                      ->orWhere('seri', 'like', '%' . $search . '%');
+                });
+            })
+            ->when($tgl_keluar, function ($query, $tgl_keluar) {
+                return $query->whereDate('tgl_keluar', $tgl_keluar);
+            })
+            ->latest()
+            ->paginate(10);
     
-        return view('barangkeluar.index', compact('rsetBarangKeluar'))
-        ->with('i', (request()->input('page', 1) - 1) * 10);
+        $rsetBarangKeluar->appends(['search' => $search, 'tgl_keluar' => $tgl_keluar]);
+    
+        return view('v_barangkeluar.index', compact('rsetBarangKeluar'))
+            ->with('i', (request()->input('page', 1) - 1) * 10);
     }
+    
 
     public function create()
     {
         $abarangkeluar = Barang::all();
-        return view('barangkeluar.create',compact('abarangkeluar'));
+        return view('v_barangkeluar.create',compact('abarangkeluar'));
     }
 
     public function store(Request $request)
@@ -74,7 +77,7 @@ class BarangKeluarController extends Controller
     public function show($id)
     {
         $barangKeluar = BarangKeluar::findOrFail($id);
-        return view('barangkeluar.show', compact('barangKeluar'));
+        return view('v_barangkeluar.show', compact('barangKeluar'));
     }
 
     public function edit($id)
@@ -82,7 +85,7 @@ class BarangKeluarController extends Controller
         $barangKeluar = BarangKeluar::findOrFail($id);
         $abarangkeluar = Barang::all();
 
-        return view('barangkeluar.edit', compact('barangKeluar', 'abarangkeluar'));
+        return view('v_barangkeluar.edit', compact('barangKeluar', 'abarangkeluar'));
     }
 
     public function update(Request $request, $id)

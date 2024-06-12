@@ -20,7 +20,7 @@
                             </tr>
                             <tr>
                                 <td class="font-weight-bold">KETERANGAN</td>
-                                <td>{{ $kategori->ketKategorik }}</td>
+                                <td>{{ $kategori->ket }}</td>
                             </tr>
                         </table>
                     </div>

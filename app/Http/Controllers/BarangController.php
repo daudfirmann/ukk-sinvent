@@ -17,24 +17,27 @@ class BarangController extends Controller
         $search = $request->input('search');
     
         $rsetBarang = Barang::with('kategori')
-                            ->when($search, function ($query, $search) {
-                            return $query->where('merk', 'like', '%' . $search . '%')
-                                ->orWhere('seri', 'like', '%' . $search . '%')
-                                ->orWhereHas('kategori', function ($query) use ($search) {
-                                $query->where('deskripsi', 'like', '%' . $search . '%');
-                                });
-                        })
-                        ->latest()
-                        ->paginate(10);
+            ->when($search, function ($query, $search) {
+                return $query->where('merk', 'like', '%' . $search . '%')
+                    ->orWhere('seri', 'like', '%' . $search . '%')
+                    ->orWhereHas('kategori', function ($query) use ($search) {
+                        $query->where('deskripsi', 'like', '%' . $search . '%');
+                    });
+            })
+            ->latest()
+            ->paginate(10);
     
-        return view('barang.index', compact('rsetBarang'))
-        ->with('i', (request()->input('page', 1) - 1) * 10);
+        $rsetBarang->appends(['search' => $search]);
+    
+        return view('v_barang.index', compact('rsetBarang'))
+            ->with('i', (request()->input('page', 1) - 1) * 10);
     }
+    
     
     public function create()
     {
         $akategori = Kategori::all();
-        return view('barang.create',compact('akategori'));
+        return view('v_barang.create',compact('akategori'));
     }
 
     public function store(Request $request)
@@ -68,7 +71,7 @@ class BarangController extends Controller
     {
         $rsetBarang = Barang::find($id);
 
-        return view('barang.show', compact('rsetBarang'));
+        return view('v_barang.show', compact('rsetBarang'));
     }
 
     public function edit(string $id)
@@ -77,7 +80,7 @@ class BarangController extends Controller
     $rsetBarang = Barang::find($id);
     $selectedKategori = Kategori::find($rsetBarang->kategori_id);
 
-    return view('barang.edit', compact('rsetBarang', 'akategori', 'selectedKategori'));
+    return view('v_barang.edit', compact('rsetBarang', 'akategori', 'selectedKategori'));
     }
 
     public function update(Request $request, string $id)

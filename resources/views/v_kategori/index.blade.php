@@ -60,7 +60,7 @@
                                     <td class="text-center">{{ ++$i }}</td>
                                     <td>{{ $rowkategori->deskripsi }}</td>
                                     <td>{{ $rowkategori->kategori }}</td>
-                                    <td>{{ $rowkategori->ketKategorik }}</td>
+                                    <td>{{ $rowkategori->ket }}</td>
                                     <td class="text-center">
                                         <form onsubmit="return confirm('Apakah Anda Yakin ?');" action="{{ route('kategori.destroy', $rowkategori->id) }}" method="POST">
                                             <a href="{{ route('kategori.show', $rowkategori->id) }}" class="btn btn-sm btn-primary"><i class="fa fa-eye"></i></a>

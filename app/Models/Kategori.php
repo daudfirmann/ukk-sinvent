@@ -13,14 +13,9 @@ class Kategori extends Model
     protected $table = 'kategori';
     protected $fillable = ['deskripsi','kategori'];
 
-    public static function infoKategori(){
-        return DB::table('kategori')
-            ->select('kategori.id','deskripsi',DB::raw('infoKategori(kategori) as Info'))->get();
-    }
-
     public static function getKategoriAll(){
         return DB::table('kategori')
-            ->select('kategori.id','deskripsi',DB::raw('ketKategorik(kategori) as ketkategorik'));
+            ->select('kategori.id','deskripsi',DB::raw('ketKategorik(kategori) as ket'));
     }
 
 }

@@ -16,28 +16,28 @@ class BarangMasukController extends Controller
         $tgl_masuk = $request->input('tgl_masuk');
     
         $rsetBarangMasuk = BarangMasuk::with('barang')
-                        ->when($search, function ($query, $search) {
-                            return $query->whereHas('barang', function($q) use ($search) {
-                                $q->where('merk', 'like', '%' . $search . '%')
-                                  ->orWhere('seri', 'like', '%' . $search . '%');
-                            });
-                        })
-                        ->when($tgl_masuk, function ($query, $tgl_masuk) {
-                            return $query->whereDate('tgl_masuk', $tgl_masuk);
-                        })
-                        ->latest()
-                        ->paginate(10);
+            ->when($search, function ($query, $search) {
+                return $query->whereHas('barang', function($q) use ($search) {
+                    $q->where('merk', 'like', '%' . $search . '%')
+                      ->orWhere('seri', 'like', '%' . $search . '%');
+                });
+            })
+            ->when($tgl_masuk, function ($query, $tgl_masuk) {
+                return $query->whereDate('tgl_masuk', $tgl_masuk);
+            })
+            ->latest()
+            ->paginate(10);
     
-        return view('barangmasuk.index', compact('rsetBarangMasuk'))
-        ->with('i', (request()->input('page', 1) - 1) * 10);
+        $rsetBarangMasuk->appends(['search' => $search, 'tgl_masuk' => $tgl_masuk]);
+    
+        return view('v_barangmasuk.index', compact('rsetBarangMasuk'))
+            ->with('i', (request()->input('page', 1) - 1) * 10);
     }
-    
-    
     
     public function create()
     {
         $abarangmasuk = Barang::all();
-        return view('barangmasuk.create',compact('abarangmasuk'));
+        return view('v_barangmasuk.create',compact('abarangmasuk'));
     }
     
     public function store(Request $request)
@@ -61,7 +61,7 @@ class BarangMasukController extends Controller
     public function show($id)
     {
         $barangMasuk = BarangMasuk::findOrFail($id);
-        return view('barangmasuk.show', compact('barangMasuk'));
+        return view('v_barangmasuk.show', compact('barangMasuk'));
     }
 
     public function edit($id)
@@ -69,7 +69,7 @@ class BarangMasukController extends Controller
         $barangMasuk = BarangMasuk::findOrFail($id);
         $abarangmasuk = Barang::all();
 
-        return view('barangmasuk.edit', compact('barangMasuk', 'abarangmasuk'));
+        return view('v_barangmasuk.edit', compact('barangMasuk', 'abarangmasuk'));
     }
 
     public function update(Request $request, $id)
