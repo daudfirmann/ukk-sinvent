@@ -54,7 +54,7 @@ class KategoriController extends Controller
         try {
             Kategori::create([
                 'deskripsi' => $request->deskripsi,
-                'kategori' => $request->kategori,
+                'kategori'  => $request->kategori,
             ]);
     
             DB::commit();
@@ -85,7 +85,7 @@ class KategoriController extends Controller
     public function update(Request $request, string $id)
     {
         $request->validate([
-            'deskripsi'   => 'required|unique:kategori,deskripsi',
+            'deskripsi'   => 'required',
             'kategori'    => 'required|in:M,A,BHP,BTHP',
         ]);
 
